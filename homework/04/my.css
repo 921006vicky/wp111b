@@ -1,0 +1,34 @@
+h1 {
+    text-align: center;
+    color:#674489;
+}
+
+body {
+    margin: 20px 10%;
+    background-color: rgb(111, 181, 224);
+}
+
+pre {
+    border:1px dotted #888888;
+    padding: 10px;
+    border-radius: 20px;
+}
+table {
+    border: 0;
+    border-collapse: collapse;
+    border-radius: 8px;
+    width: 100%;
+}
+th {
+    border: solid 1px #000000;
+    padding: 16px 8px;
+    background-color: rgb(255, 255, 255);
+}
+td {
+    border: solid 1px #000000;
+    text-align: center;
+    padding: 8px;
+    color: #757575;
+    background-color: rgb(231, 170, 122);
+}
+
