@@ -5,9 +5,5 @@ function vdot(a, b) {
   }
   return result;
 }
-let v1 = [1, 2];
-let v2 = [3, 4];
-
+let v1 = [1, 2], v2 = [3, 4];
 console.log(vdot(v1, v2));//(1 * 3) + (2 * 4) = 3 + 8 = 11
-
-//chat的解答
