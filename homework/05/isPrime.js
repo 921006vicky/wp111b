@@ -14,7 +14,4 @@ function isPrime(n)
     return true
 }
 
-console.log('isPrime(1)=',isPrime(1))
-console.log('isPrime(2)=',isPrime(2))
-console.log('isPrime(3)=',isPrime(3))
-console.log('isPrime(4)=',isPrime(4))
+console.log(isPrime(101))
