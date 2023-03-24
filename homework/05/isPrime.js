@@ -18,4 +18,5 @@ function isPrime(n) {
     
     // 若無法整除，則為質數
     return true;
+    
   }
