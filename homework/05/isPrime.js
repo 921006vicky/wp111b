@@ -14,4 +14,4 @@ function isPrime(n)
     return true
 }
 
-console.log('isPrime(101)',isPrime(101))
+console.log('isPrime(101)',isPrime(101)) //'isPrime(101)',不加也沒事
