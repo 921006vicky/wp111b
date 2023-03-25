@@ -11,7 +11,7 @@ function isPrime(n) {
     return true;
 }
 
-console.log('isPrime(101)', isPrime(101)); //'isPrime(101)',不加也沒事
+console.log('isPrime(101)=', isPrime(101)); //'isPrime(101)',不加也沒事
 
 
 //let用於宣告的區域，var用於所有區域 
