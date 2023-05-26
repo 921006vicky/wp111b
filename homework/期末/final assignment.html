@@ -16,7 +16,6 @@
 </head>
 <body>
   <h1>踩地雷遊戲</h1>
-
   <table id="minefield">
     <tbody>
     </tbody>
@@ -26,7 +25,9 @@
     // 遊戲參數
     var rows = 10; // 行數
     var columns = 10; // 列數
-    var mines = 10; // 雷數
+    var minMines = 5; // 最小雷數
+    var maxMines = 20; // 最大雷數
+    var mines = Math.floor(Math.random() * (maxMines - minMines + 1)) + minMines; // 隨機雷數
 
     // 建立地雷區域
     var minefield = [];
@@ -201,6 +202,11 @@
         cells[i].removeEventListener('contextmenu', markCell);
       }
     }
-  </script>
+    
+    // 顯示炸彈數量
+    var bombCount = document.createElement('p');
+    bombCount.innerHTML = '炸彈數量：' + mines;
+    document.body.appendChild(bombCount);
+</script>
 </body>
 </html>
