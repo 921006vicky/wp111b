@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>踩地雷遊戲</title>
+  <style>
+    .cell {
+      border: 1px solid #ccc;
+      width: 20px;
+      height: 20px;
+      text-align: center;
+      font-size: 12px;
+      background-color: #eee;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>踩地雷遊戲</h1>
+
+  <table id="minefield">
+    <tbody>
+    </tbody>
+  </table>
+
+  <script>
+    // 遊戲參數
+    var rows = 10; // 行數
+    var columns = 10; // 列數
+    var mines = 10; // 雷數
+
+    // 建立地雷區域
+    var minefield = [];
+    var revealedCount = 0; // 已揭示的格子數量
+    var flaggedCount = 0; // 標註的地雷數量
+
+    for (var i = 0; i < rows; i++) {
+      var row = [];
+      for (var j = 0; j < columns; j++) {
+        row.push({
+          mine: false, // 是否為地雷
+          count: 0, // 周圍地雷數量
+          revealed: false, // 是否已揭示
+          flagged: false // 是否被標註地雷
+        });
+      }
+      minefield.push(row);
+    }
+
+    // 隨機放置地雷
+    var count = 0;
+    while (count < mines) {
+      var x = Math.floor(Math.random() * rows);
+      var y = Math.floor(Math.random() * columns);
+      if (!minefield[x][y].mine) {
+        minefield[x][y].mine = true;
+        count++;
+      }
+    }
+
+    // 計算周圍地雷數量
+    for (var i = 0; i < rows; i++) {
+      for (var j = 0; j < columns; j++) {
+        if (!minefield[i][j].mine) {
+          minefield[i][j].count = countMines(i, j);
+        }
+      }
+    }
+
+    // 計算特定格子周圍地雷數量
+    function countMines(x, y) {
+      var count = 0;
+      for (var i = -1; i <= 1; i++) {
+        for (var j = -1; j <= 1; j++) {
+          var newX = x + i;
+          var newY = y + j;
+          if (newX >= 0 && newX < rows && newY >= 0 && newY < columns && minefield[newX][newY].mine) {
+            count++;
+          }
+        }
+      }
+      return count;
+    }
+
+    // 渲染地雷區域
+    var table = document.getElementById('minefield');
+    for (var i = 0; i < rows; i++) {
+      var row = document.createElement('tr');
+      for (var j = 0; j < columns; j++) {
+        var cell = document.createElement('td');
+        cell.className = 'cell';
+        cell.setAttribute('data-row', i);
+        cell.setAttribute('data-column', j);
+        cell.addEventListener('click', revealCell);
+        cell.addEventListener('contextmenu', markCell);
+        row.appendChild(cell);
+      }
+      table.appendChild(row);
+    }
+
+    // 揭示格子
+    function revealCell(event) {
+      var row = parseInt(this.getAttribute('data-row'));
+      var column = parseInt(this.getAttribute('data-column'));
+
+      if (minefield[row][column].mine) {
+        // 點到地雷，遊戲結束
+        alert('你踩到地雷了！遊戲結束！');
+        revealAllCells();
+      } else {
+        // 顯示格子的地雷數量
+        var count = minefield[row][column].count;
+        this.innerHTML = count;
+        this.style.backgroundColor = '#fff';
+        minefield[row][column].revealed = true;
+        revealedCount++;
+
+        // 若周圍無地雷，則揭示周圍格子
+        if (count === 0) {
+          revealSurroundingCells(row, column);
+        }
+
+        // 檢查是否已完成遊戲
+        if (revealedCount === (rows * columns) - mines) {
+          alert('恭喜！你成功完成遊戲！');
+          revealAllCells();
+        }
+      }
+    }
+
+    // 標註格子為地雷
+    function markCell(event) {
+      event.preventDefault(); // 阻止右鍵預設行為
+      var row = parseInt(this.getAttribute('data-row'));
+      var column = parseInt(this.getAttribute('data-column'));
+
+      if (minefield[row][column].revealed) {
+        return; // 若格子已揭示，不做任何操作
+      }
+
+      if (minefield[row][column].flagged) {
+        // 取消標註
+        this.innerHTML = '';
+        this.style.backgroundColor = '#eee';
+        minefield[row][column].flagged = false;
+        flaggedCount--;
+      } else {
+        // 標註地雷
+        this.innerHTML = 'X';
+        this.style.backgroundColor = '#f00';
+        minefield[row][column].flagged = true;
+        flaggedCount++;
+
+        // 檢查是否已完成遊戲
+        if (flaggedCount === mines) {
+          var allFlagged = true;
+          for (var i = 0; i < rows; i++) {
+            for (var j = 0; j < columns; j++) {
+              if (minefield[i][j].mine && !minefield[i][j].flagged) {
+                allFlagged = false;
+                break;
+              }
+            }
+          }
+          if (allFlagged) {
+            alert('恭喜！你成功完成遊戲！');
+            revealAllCells();
+          }
+        }
+      }
+    }
+
+    // 揭示周圍格子
+    function revealSurroundingCells(row, column) {
+      for (var i = -1; i <= 1; i++) {
+        for (var j = -1; j <= 1; j++) {
+          var newRow = row + i;
+          var newColumn = column + j;
+          if (newRow >= 0 && newRow < rows && newColumn >= 0 && newColumn < columns && !minefield[newRow][newColumn].revealed) {
+            revealCell.call(document.querySelector('td[data-row="' + newRow + '"][data-column="' + newColumn + '"]'));
+          }
+        }
+      }
+    }
+
+    // 揭示所有格子
+    function revealAllCells() {
+      var cells = document.querySelectorAll('.cell');
+      for (var i = 0; i < cells.length; i++) {
+        var row = parseInt(cells[i].getAttribute('data-row'));
+        var column = parseInt(cells[i].getAttribute('data-column'));
+        if (minefield[row][column].mine) {
+          cells[i].style.backgroundColor = '#f00';
+          cells[i].innerHTML = '*';
+        } else if (minefield[row][column].flagged) {
+          cells[i].innerHTML = '';
+          cells[i].style.backgroundColor = '#eee';
+        } else {
+          cells[i].innerHTML = minefield[row][column].count;
+        }
+        cells[i].removeEventListener('click', revealCell);
+        cells[i].removeEventListener('contextmenu', markCell);
+      }
+    }
+  </script>
+</body>
+</html>
