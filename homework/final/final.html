@@ -33,6 +33,7 @@
     var minefield = [];
     var revealedCount = 0; // 已揭示的格子數量
     var flaggedCount = 0; // 標註的地雷數量
+    var firstClick = true; // 判斷是否為第一次點擊
 
     for (var i = 0; i < rows; i++) {
       var row = [];
@@ -102,6 +103,14 @@
     function revealCell(event) {
       var row = parseInt(this.getAttribute('data-row'));
       var column = parseInt(this.getAttribute('data-column'));
+
+      if (firstClick) {
+        // 第一次點擊，避免踩到地雷
+        while (minefield[row][column].mine) {
+          resetMinefield();
+        }
+        firstClick = false;
+      }
 
       if (minefield[row][column].mine) {
         // 點到地雷，遊戲結束
@@ -202,11 +211,11 @@
         cells[i].removeEventListener('contextmenu', markCell);
       }
     }
-    
+
     // 顯示炸彈數量
     var bombCount = document.createElement('p');
     bombCount.innerHTML = '炸彈數量：' + mines;
     document.body.appendChild(bombCount);
-</script>
+  </script>
 </body>
 </html>
